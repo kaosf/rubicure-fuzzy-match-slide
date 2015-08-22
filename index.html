@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="ka (kaosfield)" />
+  <meta name="date" content="2015-08-22" />
+  <title>Rubicureをあいまい検索対応強化してみた</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" type="text/css" media="screen, projection, print"
+    href="http://www.w3.org/Talks/Tools/Slidy2/styles/slidy.css" />
+  <script src="http://www.w3.org/Talks/Tools/Slidy2/scripts/slidy.js"
+    charset="utf-8" type="text/javascript"></script>
+</head>
+<body>
+<div class="slide titlepage">
+  <h1 class="title">Rubicureをあいまい検索対応強化してみた</h1>
+  <p class="author">
+ka (<a href="http://www.kaosfield.net">kaosfield</a>)
+  </p>
+  <p class="date">2015-08-22</p>
+</div>
+<div id="皆大好き便利なrubicure" class="slide section level1">
+<h1>皆大好き便利なRubicure</h1>
+<pre class="sh"><code>gem install rubicure</code></pre>
+</div>
+<div id="私が思う一つの問題点" class="slide section level1">
+<h1>私が思う一つの問題点</h1>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">Precure</span>.splashstar
+<span class="co">#=&gt;</span>
+<span class="co"># NoMethodError: undefined method `splashstar&#39; for #&lt;Rubicure::Core:0x007f60ca7da078&gt;</span>
+<span class="co">#         from /home/username/.rbenv/versions/2.2.3/lib/ruby/gems/2.2.0/gems/rubicure-0.2.8.1/lib/rubicure/core.rb:18:in `method_missing&#39;</span>
+<span class="co">#         from /home/username/.rbenv/versions/2.2.3/lib/ruby/gems/2.2.0/gems/rubicure-0.2.8.1/lib/rubicure.rb:20:in `method_missing&#39;</span>
+<span class="co">#         from (irb):2</span>
+<span class="co">#         from /home/username/.rbenv/versions/2.2.3/bin/irb:11:in `&lt;main&gt;&#39;</span></code></pre></div>
+<p>正しくは</p>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">Precure</span>.splash_star
+<span class="co">#=&gt; {:series_name=&gt;&quot;splash_star&quot;, :title=&gt;&quot;ふたりはプリキュア Splash☆Star&quot;, :started_date=&gt;Sun, 05 Feb 2006, :ended_date=&gt;Sun, 28 Jan 2007, :girls=&gt;[&quot;cure_bloom&quot;, &quot;cure_egret&quot;]}</span></code></pre></div>
+</div>
+<div id="規則が覚えられない" class="slide section level1">
+<h1>規則が覚えられない</h1>
+<ul>
+<li>
+<code>yes_go_go</code>
+</li>
+<li>
+<code>yes_gogo</code>
+</li>
+</ul>
+<div class="incremental">
+<p>どちらが正しいか分かりますか？</p>
+<p>正解は <code>yes_gogo</code></p>
+</div>
+</div>
+<div id="なので適当に覚えていればいいようにした" class="slide section level1">
+<h1>なので適当に覚えていればいいようにした</h1>
+<pre class="sh"><code>gem install rubicure_fuzzy_match</code></pre>
+<p>これでRubicureが強化される</p>
+</div>
+<div id="rubicureseriese-に-fuzzy_find-が追加される" class="slide section level1">
+<h1><code>Rubicure::Seriese</code> に <code>fuzzy_find</code> が追加される</h1>
+<div class="incremental">
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">Rubicure</span>::<span class="dt">Seriese</span>.fuzzy_find <span class="st">&#39;yesgogo&#39;</span>
+<span class="co">#=&gt; {:series_name=&gt;&quot;yes_gogo&quot;, :title=&gt;&quot;Yes！ プリキュア5 Go Go！&quot;, :started_date=&gt;Sun, 03 Feb 2008, :ended_date=&gt;Sun, 25 Jan 2009, :girls=&gt;[&quot;cure_dream&quot;, &quot;cure_rouge&quot;, &quot;cure_lemonade&quot;, &quot;cure_mint&quot;, &quot;cure_aqua&quot;, &quot;milky_rose&quot;]}</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">Rubicure</span>::<span class="dt">Seriese</span>.fuzzy_find <span class="st">&#39;yes gogo&#39;</span>
+<span class="co">#=&gt; {:series_name=&gt;&quot;yes_gogo&quot;, :title=&gt;&quot;Yes！ プリキュア5 Go Go！&quot;, :started_date=&gt;Sun, 03 Feb 2008, :ended_date=&gt;Sun, 25 Jan 2009, :girls=&gt;[&quot;cure_dream&quot;, &quot;cure_rouge&quot;, &quot;cure_lemonade&quot;, &quot;cure_mint&quot;, &quot;cure_aqua&quot;, &quot;milky_rose&quot;]}</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">Rubicure</span>::<span class="dt">Seriese</span>.fuzzy_find <span class="st">&#39;5 gogo&#39;</span>
+<span class="co">#=&gt; {:series_name=&gt;&quot;yes_gogo&quot;, :title=&gt;&quot;Yes！ プリキュア5 Go Go！&quot;, :started_date=&gt;Sun, 03 Feb 2008, :ended_date=&gt;Sun, 25 Jan 2009, :girls=&gt;[&quot;cure_dream&quot;, &quot;cure_rouge&quot;, &quot;cure_lemonade&quot;, &quot;cure_mint&quot;, &quot;cure_aqua&quot;, &quot;milky_rose&quot;]}</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">Rubicure</span>::<span class="dt">Seriese</span>.fuzzy_find <span class="st">&#39;555&#39;</span>
+<span class="co">#=&gt; {:series_name=&gt;&quot;yes_gogo&quot;, :title=&gt;&quot;Yes！ プリキュア5 Go Go！&quot;, :started_date=&gt;Sun, 03 Feb 2008, :ended_date=&gt;Sun, 25 Jan 2009, :girls=&gt;[&quot;cure_dream&quot;, &quot;cure_rouge&quot;, &quot;cure_lemonade&quot;, &quot;cure_mint&quot;, &quot;cure_aqua&quot;, &quot;milky_rose&quot;]}</span></code></pre></div>
+</div>
+</div>
+<div id="かなり適当な検索で作品を取ってこれる" class="slide section level1">
+<h1>かなり適当な検索で作品を取ってこれる</h1>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">Rubicure</span>::<span class="dt">Seriese</span>.fuzzy_find <span class="st">&#39;ss&#39;</span>
+<span class="co">#=&gt; {:series_name=&gt;&quot;splash_star&quot;, :title=&gt;&quot;ふたりはプリキュア Splash☆Star&quot;, :started_date=&gt;Sun, 05 Feb 2006, :ended_date=&gt;Sun, 28 Jan 2007, :girls=&gt;[&quot;cure_bloom&quot;, &quot;cure_egret&quot;]}</span>
+
+<span class="dt">Rubicure</span>::<span class="dt">Seriese</span>.fuzzy_find <span class="st">&#39;ゴプリ&#39;</span>
+<span class="co">#=&gt; {:series_name=&gt;&quot;go_princess&quot;, :title=&gt;&quot;Go!プリンセスプリキュア&quot;, :started_date=&gt;Sun, 01 Feb 2015, :girls=&gt;[&quot;cure_flora&quot;, &quot;cure_mermaid&quot;, &quot;cure_twinkle&quot;, &quot;cure_scarlett&quot;]}</span>
+
+<span class="dt">Rubicure</span>::<span class="dt">Seriese</span>.fuzzy_find <span class="st">&#39;ハト&#39;</span>
+<span class="co">#=&gt; {:series_name=&gt;&quot;heart_catch&quot;, :title=&gt;&quot;ハートキャッチプリキュア！&quot;, :started_date=&gt;Sun, 07 Feb 2010, :ended_date=&gt;Sun, 30 Jan 2011, :girls=&gt;[&quot;cure_blossom&quot;, &quot;cure_marine&quot;, &quot;cure_sunshine&quot;, &quot;cure_moonlight&quot;]}</span>
+
+<span class="dt">Rubicure</span>::<span class="dt">Seriese</span>.fuzzy_find <span class="st">&#39;姫プリ&#39;</span>
+<span class="co">#=&gt; {:series_name=&gt;&quot;go_princess&quot;, :title=&gt;&quot;Go!プリンセスプリキュア&quot;, :started_date=&gt;Sun, 01 Feb 2015, :girls=&gt;[&quot;cure_flora&quot;, &quot;cure_mermaid&quot;, &quot;cure_twinkle&quot;, &quot;cure_scarlett&quot;]}</span></code></pre></div>
+</div>
+<div id="作品名の正規化" class="slide section level1">
+<h1>作品名の正規化</h1>
+<p><code>Rubicure::Seriese.regularize</code> メソッドで正規化が出来る</p>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">Rubicure</span>::<span class="dt">Seriese</span>.regularize <span class="st">&#39;splashstar&#39;</span> <span class="co">#=&gt; &quot;ふたりはプリキュア Splash☆Star&quot;</span>
+<span class="dt">Rubicure</span>::<span class="dt">Seriese</span>.regularize <span class="st">&#39;スマプリ&#39;</span> <span class="co">#=&gt; &quot;スマイルプリキュア！&quot;</span>
+<span class="dt">Rubicure</span>::<span class="dt">Seriese</span>.regularize <span class="st">&#39;スマイプリ&#39;</span> <span class="co">#=&gt; &quot;スマイルプリキュア！&quot;</span>
+<span class="dt">Rubicure</span>::<span class="dt">Seriese</span>.regularize <span class="st">&#39;ハピチャ&#39;</span> <span class="co">#=&gt; &quot;ハピネスチャージプリキュア！&quot;</span></code></pre></div>
+<p><code>fuzzy_find</code> の中で使ってる</p>
+</div>
+<div id="実装" class="slide section level1">
+<h1>実装</h1>
+<p><a href="https://github.com/seamusabshere/fuzzy_match">seamusabshere/fuzzy_match</a></p>
+<p>なんかこんなgemがあって適当にいい感じに合うものを探してくれる仕組みが簡単に作れた</p>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby">require <span class="st">&#39;fuzzy_match&#39;</span>
+
+fm = <span class="dt">FuzzyMatch</span>.new [<span class="st">&#39;プリキュア&#39;</span>, <span class="st">&#39;ナージャ&#39;</span>]
+fm.find <span class="st">&#39;ナンジャ&#39;</span> <span class="co">#=&gt; &quot;ナージャ&quot;</span>
+fm.find <span class="st">&#39;プリプリ&#39;</span> <span class="co">#=&gt; &quot;プリキュア&quot;</span>
+fm.find <span class="st">&#39;どれみ&#39;</span>   <span class="co">#=&gt; nil</span></code></pre></div>
+</div>
+<div id="fuzzy_matchについて" class="slide section level1">
+<h1>fuzzy_matchについて</h1>
+<p>今朝コンビニで時間潰してる時に偶然知った</p>
+<p>アルゴリズムとか全然分かってない</p>
+<p>他にもっとなんか簡単に実現出来るのがあるかも(これが一番怖い…)</p>
+</div>
+<div id="問題点" class="slide section level1">
+<h1>問題点</h1>
+<p>日本語で「スプラッシュスター」とか「マックスハート」とかで検索しても大丈夫にしたい</p>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">Rubicure</span>::<span class="dt">Seriese</span>.regularize <span class="st">&#39;スプラッシュスター&#39;</span> <span class="co">#=&gt; &quot;フレッシュプリキュア！&quot;</span></code></pre></div>
+<p>「プリンセスプリキュア」がかなり誤検出のもとになっていて何もしないと「フレプリ」「スマプリ」がこれになってしまう</p>
+<p>自前でパターンを追加して今は回避してる</p>
+<p>例外を追加しまくっていくのは綺麗とは思えないので何とかしたい</p>
+</div>
+<div id="おまけ" class="slide section level1">
+<h1>おまけ</h1>
+<p>RSpecじゃなくてtest-unit (gemの方)を使っている</p>
+<p>データ駆動テストをやってみてる</p>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">TestRubicureFuzzyMatch</span> &lt; <span class="dt">Test</span>::<span class="dt">Unit</span>::<span class="dt">TestCase</span>
+  data(
+    <span class="st">&quot;ふたり&quot;</span>      =&gt; [<span class="st">&quot;ふたり&quot;</span>     , <span class="st">&quot;ふたりはプリキュア&quot;</span>            ],
+    <span class="st">&quot;初代&quot;</span>        =&gt; [<span class="st">&quot;初代&quot;</span>       , <span class="st">&quot;ふたりはプリキュア&quot;</span>            ],
+    ...
+    <span class="st">&quot;姫プリ&quot;</span>      =&gt; [<span class="st">&quot;姫プリ&quot;</span>     , <span class="st">&quot;Go!プリンセスプリキュア&quot;</span>       ])
+  test <span class="st">&#39;.regularize&#39;</span> <span class="kw">do</span> |data|
+    assert_equal data[<span class="dv">1</span>], <span class="dt">Rubicure</span>::<span class="dt">Seriese</span>.regularize(data[<span class="dv">0</span>])
+  <span class="kw">end</span>
+  ...
+<span class="kw">end</span></code></pre></div>
+<p>参考: <a href="http://qiita.com/repeatedly/items/727b08599d87af7fa671">Ruby - Test::Unitでテストを書く - Qiita</a></p>
+</div>
+<div id="section" class="slide section level1">
+<h1></h1>
+<p>おわり</p>
+</div>
+</body>
+</html>
+<!-- Pandoc version:
+pandoc 1.15.0.6
+Compiled with texmath 0.8.2, highlighting-kate 0.6.
+Syntax highlighting is supported for the following languages:
+    abc, actionscript, ada, agda, apache, asn1, asp, awk, bash, bibtex, boo, c,
+    changelog, clojure, cmake, coffee, coldfusion, commonlisp, cpp, cs, css,
+    curry, d, diff, djangotemplate, dockerfile, dot, doxygen, doxygenlua, dtd,
+    eiffel, email, erlang, fasm, fortran, fsharp, gcc, glsl, gnuassembler, go,
+    haskell, haxe, html, idris, ini, isocpp, java, javadoc, javascript, json,
+    jsp, julia, kotlin, latex, lex, lilypond, literatecurry, literatehaskell,
+    lua, m4, makefile, mandoc, markdown, mathematica, matlab, maxima, mediawiki,
+    metafont, mips, modelines, modula2, modula3, monobasic, nasm, noweb,
+    objectivec, objectivecpp, ocaml, octave, opencl, pascal, perl, php, pike,
+    postscript, prolog, pure, python, r, relaxng, relaxngcompact, rest, rhtml,
+    roff, ruby, rust, scala, scheme, sci, sed, sgml, sql, sqlmysql,
+    sqlpostgresql, tcl, tcsh, texinfo, verilog, vhdl, xml, xorg, xslt, xul,
+    yacc, yaml, zsh
+Default user data directory: <DELETED>
+Copyright (C) 2006-2015 John MacFarlane
+Web:  http://pandoc.org
+This is free software; see the source for copying conditions.
+There is no warranty, not even for merchantability or fitness
+for a particular purpose.
+-->
