@@ -126,10 +126,14 @@ fm.find 'どれみ'   #=> nil
 
 # 問題点
 
-日本語で「スプラッシュスター」とか「マックスハート」とかで検索しても大丈夫にしたい
+<p><del>日本語で「スプラッシュスター」とか「マックスハート」とかで検索しても大丈夫にしたい</del></p>
+
+<span style="color:red">バージョン0.1.2で対応！</span>
 
 ```ruby
-Rubicure::Seriese.regularize 'スプラッシュスター' #=> "フレッシュプリキュア！"
+Rubicure::Seriese.regularize 'スプラッシュスター' #=> "ふたりはプリキュア Splash☆Star"
+Rubicure::Seriese.regularize 'マックスハート' #=> "ふたりはプリキュア Max Heart"
+Rubicure::Seriese.regularize 'イエスプリキュア5' #=> "Yes！ プリキュア5"
 ```
 
 「プリンセスプリキュア」がかなり誤検出のもとになっていて何もしないと「フレプリ」「スマプリ」がこれになってしまう

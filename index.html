@@ -152,8 +152,15 @@ fm.find <span class="st">&#39;どれみ&#39;</span>   <span class="co">#=&gt; ni
 </div>
 <div id="問題点" class="slide section level1">
 <h1>問題点</h1>
-<p>日本語で「スプラッシュスター」とか「マックスハート」とかで検索しても大丈夫にしたい</p>
-<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">Rubicure</span>::<span class="dt">Seriese</span>.regularize <span class="st">&#39;スプラッシュスター&#39;</span> <span class="co">#=&gt; &quot;フレッシュプリキュア！&quot;</span></code></pre></div>
+<p>
+<del>
+日本語で「スプラッシュスター」とか「マックスハート」とかで検索しても大丈夫にしたい
+</del>
+</p>
+<p><span style="color:red">バージョン0.1.2で対応！</span></p>
+<div class="sourceCode"><pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">Rubicure</span>::<span class="dt">Seriese</span>.regularize <span class="st">&#39;スプラッシュスター&#39;</span> <span class="co">#=&gt; &quot;ふたりはプリキュア Splash☆Star&quot;</span>
+<span class="dt">Rubicure</span>::<span class="dt">Seriese</span>.regularize <span class="st">&#39;マックスハート&#39;</span> <span class="co">#=&gt; &quot;ふたりはプリキュア Max Heart&quot;</span>
+<span class="dt">Rubicure</span>::<span class="dt">Seriese</span>.regularize <span class="st">&#39;イエスプリキュア5&#39;</span> <span class="co">#=&gt; &quot;Yes！ プリキュア5&quot;</span></code></pre></div>
 <p>「プリンセスプリキュア」がかなり誤検出のもとになっていて何もしないと「フレプリ」「スマプリ」がこれになってしまう</p>
 <p>自前でパターンを追加して今は回避してる</p>
 <p>例外を追加しまくっていくのは綺麗とは思えないので何とかしたい</p>
